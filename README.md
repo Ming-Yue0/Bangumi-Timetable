@@ -1,8 +1,6 @@
-# Bangumi-Timetable
+# 新番时间表 Bangumi-Timetable
 
-# 新番时间表
-
-用于获取新番更新时间，支持以 Bangumi ID、AniDB ID 或名称检索。
+用于获取新番更新时间，支持以 Bangumi ID、AniDB ID 或中日名称检索。
 
 ## 用法
 
@@ -24,6 +22,6 @@
         "begin": "2022-04-05T14:00:00.000Z",
         "bangumiId": "356756",
         "anidbId": "16970"
-    },
+    }
 ]
 ```
