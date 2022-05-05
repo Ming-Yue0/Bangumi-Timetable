@@ -1,4 +1,4 @@
-# 新番时间表 Bangumi-Timetable
+# 新番时间表 Bangumi Timetable
 
 用于获取新番更新时间，支持以 Bangumi ID、AniDB ID 或中日名称检索。
 
