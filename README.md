@@ -4,13 +4,13 @@
 
 数据均来源于网络，有错误请提 issue 或 pr 反馈。
 
-## 用法及说明
+## 说明
 
 一般情况下，`titleCN` 来自 Bangumi，`titleJP` 来自 AniDB。
 
 返回的 `begin` 值即为开始连载时间，请自行转换 UTC 时间。
 
-`latest.json` 为当季的更新时间列表，`data` 目录内包含自 2022 年 4 月起的所有记录。
+`latest.json` 为当季的更新时间列表，`data` 目录内包含自 2022 年 4 月起的所有记录。`latest.min.json` 提供了压缩版的文件，但一般不建议使用。
 
 数据可能存在一些缺失值，通常以 -1 表示，表示未查询到该信息。
 
@@ -30,13 +30,29 @@
 
 ## 代码示例
 
-### jQuery Ajax 请求
-
 下方的代码给出了简单的请求示例。
+
+### Axios
 
 ```js
 
 var timetableData
+
+axios.get("https://cdn.jsdelivr.net/gh/ming-yue0/Bangumi-Timetable/data/202204.json")
+    .then((result) => {
+        timetableData = result.data
+        if (getTimeByTitle("夏日重现")) // 以中文名称查询（必须完全匹配）
+            console.log(new Date(getTimeByTitle("夏日重现")).toLocaleTimeString().substring(0,5)) // 转换时间
+        else console.log("暂无时间")
+
+        if (getTimeByAnidbId(16033))  // 以 AniDB ID 查询
+            console.log(new Date(getTimeByAnidbId(16033)).toLocaleTimeString().substring(0,5))
+        else console.log("暂无时间")
+
+        if (getTimeByBangumiId(326895))  // 以 Bangumi ID 查询
+            console.log(new Date(getTimeByBangumiId(326895)).toLocaleTimeString().substring(0,5))
+        else console.log("暂无时间")
+    })
 
 function getTimeByTitle(title) { // 以中文名称查询（必须完全匹配）
     var temp = timetableData.filter(function (x) { return x.titleCN == title }) // 查找
@@ -59,6 +75,14 @@ function getTimeByBangumiId(id) { // 以 Bangumi ID 查询
     return false
 }
 
+```
+
+### jQuery Ajax
+
+```js
+
+var timetableData
+
 $.ajax({
     method: "get",
     async: false,
@@ -78,6 +102,10 @@ if (getTimeByBangumiId(326895))  // 以 Bangumi ID 查询
     console.log(new Date(getTimeByBangumiId(326895)).toLocaleTimeString().substring(0,5))
 else console.log("暂无时间")
 
+function getTimeByTitle(title) { /* 以中文名称查询，代码见上 */ }
+function getTimeByAnidbId(id) { /* 以 AniDB ID 查询，代码见上 */ }
+function getTimeByBangumiId(id) { /* 以 Bangumi ID 查询，代码见上 */ }
+
 ```
 
 ### Python
@@ -85,8 +113,7 @@ else console.log("暂无时间")
 ```python
 import requests
 
-
-def filter_by(info, titleCN, anidbId, bangumiId):  # 此段代码来源于网络
+def filter_by(info, titleCN, anidbId, bangumiId): # 此段代码来源于网络
     params = locals()
     params.pop('info')
     for key in params:
@@ -95,7 +122,6 @@ def filter_by(info, titleCN, anidbId, bangumiId):  # 此段代码来源于网络
         if info.get(key) != params[key]:
             return False
     return True
-
 
 def getTime(titleCN=None, anidbId=None, bangumiId=None):
     import dateutil.parser
@@ -112,12 +138,22 @@ def getTime(titleCN=None, anidbId=None, bangumiId=None):
     time = datetime.strftime(local_time, '%H:%M')
     return time
 
-
 url = "https://cdn.jsdelivr.net/gh/ming-yue0/Bangumi-Timetable/data/202204.json"
 timetableData = requests.get(url).json()
 
-print(getTime(titleCN="夏日重现"))
-print(getTime(anidbId=16033))
-print(getTime(bangumiId=326895))
+if(getTime(titleCN="夏日重现")):
+    print(getTime(titleCN="夏日重现"))
+else:
+    print("暂无时间")
+
+if(getTime(anidbId=16033)):  
+    print(getTime(anidbId=16033))
+else:
+    print("暂无时间")
+
+if(getTime(bangumiId=326895)):
+    print(getTime(bangumiId=326895))
+else:
+    print("暂无时间")
 
 ```
